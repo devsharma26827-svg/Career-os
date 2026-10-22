@@ -1,0 +1,38 @@
+name: Feature Request
+description: Propose a new feature, adapter, or enhancement for JobPulse AI
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an enhancement! Please explain your idea, its benefits to job seekers, and how it aligns with our ethical automation and anti-fabrication principles.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem? Please describe.
+      description: A clear and concise description of what the pain point or challenge is.
+      placeholder: I am frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the Solution You'd Like
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Describe Alternatives You've Considered
+      description: Any alternative solutions or workarounds you've thought about.
+  - type: checkboxes
+    id: guidelines_check
+    attributes:
+      label: Ethical Alignment Checklist
+      options:
+        - label: This proposed feature respects candidate privacy and never hallucinates or fabricates qualifications.
+          required: true
+        - label: This proposed feature adheres to explicit user consent before external actions are dispatched.
+          required: true

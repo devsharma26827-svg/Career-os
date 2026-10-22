@@ -1,0 +1,6 @@
+{
+  "name": "CareerOS",
+  "description": "AI-powered career engine that discovers personalized job opportunities through intelligent resume analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

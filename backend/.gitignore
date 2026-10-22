@@ -1,0 +1,30 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+sql_app.db
+
+# User Uploads
+uploads/resumes/*
+!uploads/resumes/.gitkeep
+
+# Environment secrets
+.env
+.env.*
+*.env
+!*.env.example
+
+# IDE
+.vscode/
+.idea/

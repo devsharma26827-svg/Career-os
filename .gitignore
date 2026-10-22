@@ -1,0 +1,129 @@
+# ==============================================================================
+# JobPulse AI - Root .gitignore
+# Prevents accidental commits of secrets, virtual environments, binaries,
+# local databases, candidate uploads, and build artifacts.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Secrets & Environment Files (Strictly Guarded)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.env.local
+*.env.production
+*.env.development
+backend/.env
+backend/.env.*
+New Frontend/.env
+New Frontend/.env.*
+frontend/.env
+frontend/.env.*
+
+# Explicitly allow safe example templates
+!*.env.example
+!**/.env.example
+
+# ------------------------------------------------------------------------------
+# Python & Backend Artifacts
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/venv/
+venv/
+env/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+backend/.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.ruff_cache/
+
+# ------------------------------------------------------------------------------
+# SQLite Databases & Storage
+# ------------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+backend/sql_app.db
+backend/*.db
+sql_app.db
+
+# ------------------------------------------------------------------------------
+# User Uploads & Sensitive Candidate Documents
+# ------------------------------------------------------------------------------
+backend/uploads/resumes/*
+!backend/uploads/resumes/.gitkeep
+uploads/
+
+# ------------------------------------------------------------------------------
+# Node.js & Frontend Artifacts
+# ------------------------------------------------------------------------------
+node_modules/
+*/node_modules/
+New Frontend/node_modules/
+frontend/node_modules/
+New Frontend/dist/
+frontend/dist/
+New Frontend/.vite/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# ------------------------------------------------------------------------------
+# Operating System & IDE Files
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+
+# ------------------------------------------------------------------------------
+# Local Backups & Temporary Artifacts
+# ------------------------------------------------------------------------------
+*_backups/
+backups/
+*.bak*
+*.backup*
+*.tmp
+temp/
+tmp/
+logs/
+*.log
