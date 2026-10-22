@@ -587,14 +587,60 @@ Interactive Swagger UI documentation is available at `http://127.0.0.1:8000/docs
 
 ---
 
-## 25. Production Deployment Considerations
+## 25. Single-Service Render Deployment Guide
 
-When deploying JobPulse AI to a production cloud server (AWS, GCP, DigitalOcean, Render, or Railway):
-1. **Change SECRET_KEY**: Generate a cryptographically strong secret (`openssl rand -hex 32`) and update `backend/.env`.
-2. **Use a Managed Database**: Set `DATABASE_URL` to a managed PostgreSQL cluster.
-3. **Configure CORS**: Set `CORS_ORIGINS` to your exact production domain.
-4. **Static Asset Hosting**: Build the frontend (`npm run build`) and serve via Nginx, Cloudflare Pages, or AWS S3/CloudFront.
-5. **Worker Concurrency**: Run Uvicorn with multiple workers behind a reverse proxy (`gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app`).
+JobPulse AI is fully configured for seamless, zero-hassle **single-service deployment on Render**. The FastAPI backend automatically builds and serves the React 19 / Vite single-page application (`New Frontend/dist`) alongside all `/api/v1` routes and Swagger documentation on a single unified port.
+
+### Deployment Architecture
+- **Single Web Service**: No separate backend and frontend services needed.
+- **Unified Port & Origin**: Serves the frontend SPA from `/`, `/dashboard`, `/applications`, etc., and the API from `/api/v1`.
+- **Render Port Binding**: Automatically binds to Render's `$PORT` on `0.0.0.0`.
+- **React SPA Fallback**: Deep links and page reloads are handled gracefully without breaking `/api/v1`, `/docs`, `/redoc`, or `/health`.
+
+---
+
+### Step-by-Step Render Configuration
+
+1. **Sign in to Render**: Go to [dashboard.render.com](https://dashboard.render.com/) and click **New +** → **Web Service**.
+2. **Connect Repository**: Select your GitHub repository (`Company-Brain` or your fork).
+3. **Configure Service Settings**:
+   - **Name**: `career-os` (or your choice)
+   - **Language / Environment**: `Python`
+   - **Region**: Any (e.g., `Oregon (US West)` or `Frankfurt (EU)`)
+   - **Branch**: `main`
+   - **Root Directory**: *(Leave empty — use repository root)*
+   - **Build Command**:
+     ```bash
+     ./build.sh
+     ```
+     *(Or: `pip install -r backend/requirements.txt && npm --prefix "New Frontend" install && npm --prefix "New Frontend" run build`)*
+   - **Start Command**:
+     ```bash
+     uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT
+     ```
+     *(Or: `python backend/run.py`)*
+
+4. **Environment Variables**:
+
+| Variable | Required? | Recommended Production Value | Description |
+| -------- | --------- | ---------------------------- | ----------- |
+| `PYTHON_VERSION` | Recommended | `3.11.9` | Sets the Python version in the build container. |
+| `SECRET_KEY` | **Required** | *(Generate a 32-char hex string)* | Used to sign JWT session authentication tokens. |
+| `DATABASE_URL` | Optional | `sqlite:///./sql_app.db` | Default is SQLite; or provide PostgreSQL connection string. |
+| `OPENROUTER_API_KEY` | Optional | *(Your OpenRouter API Key)* | Optional cloud LLM resume parsing (falls back to local heuristic if omitted). |
+| `OPENROUTER_MODEL` | Optional | `google/gemini-2.0-flash-001` | LLM model identifier. |
+| `ADZUNA_APP_ID` | Optional | *(Your Adzuna App ID)* | Optional regional job discovery. |
+| `ADZUNA_APP_KEY` | Optional | *(Your Adzuna App Key)* | Optional regional job discovery. |
+| `SMTP_HOST` | Optional | `smtp.example.com` | Outbound email server for recruiter outreach. |
+| `SMTP_PORT` | Optional | `587` | SMTP port. |
+| `SMTP_USER` | Optional | `your_smtp_username` | SMTP username. |
+| `SMTP_PASSWORD` | Optional | `your_smtp_password` | SMTP password. |
+| `SMTP_FROM_EMAIL`| Optional | `your_email@example.com` | Outbound sender email address. |
+
+5. **Deploy**: Click **Create Web Service**. Render will execute the build script, compile the React bundle into `New Frontend/dist`, and launch the FastAPI server.
+
+### Deploying via Render Blueprint (`render.yaml`)
+Alternatively, create the service automatically using the included [`render.yaml`](render.yaml) file via **Blueprints** on Render.
 
 ---
 

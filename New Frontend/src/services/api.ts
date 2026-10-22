@@ -16,7 +16,8 @@ import type {
   TrackerResponse,
 } from '../types/backend';
 
-const CONFIGURED_API_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const DEFAULT_API_BASE = import.meta.env.PROD ? '/api/v1' : 'http://127.0.0.1:8000/api/v1';
+const CONFIGURED_API_URL = (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE).replace(/\/+$/, '');
 
 export class ApiError extends Error {
   status: number;
@@ -100,7 +101,9 @@ function getStatusFallbackMessage(status: number): string {
     case 502:
     case 503:
     case 504:
-      return 'The backend server is temporarily unavailable. Please verify it is running on http://127.0.0.1:8000.';
+      return import.meta.env.PROD
+        ? 'The server is temporarily unavailable. Please try again shortly.'
+        : 'The backend server is temporarily unavailable. Please verify it is running on http://127.0.0.1:8000.';
     default:
       return 'An unexpected error occurred. Please try again.';
   }
@@ -113,7 +116,7 @@ function getCandidateUrls(endpoint: string): string[] {
 
   if (base.startsWith('http')) {
     candidates.push(`/api/v1${cleanEndpoint}`);
-  } else {
+  } else if (!import.meta.env.PROD) {
     candidates.push(`http://127.0.0.1:8000/api/v1${cleanEndpoint}`);
   }
 
@@ -195,11 +198,10 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   }
 
   if (isNetworkError(lastNetworkError)) {
-    throw new ApiError(
-      'Unable to connect to the backend server. Please verify it is running on http://127.0.0.1:8000.',
-      0,
-      { isNetworkError: true, original: lastNetworkError?.message }
-    );
+    const errorMsg = import.meta.env.PROD
+      ? 'Unable to connect to the server. Please check your internet connection or try again shortly.'
+      : 'Unable to connect to the backend server. Please verify it is running on http://127.0.0.1:8000.';
+    throw new ApiError(errorMsg, 0, { isNetworkError: true, original: lastNetworkError?.message });
   }
 
   throw new ApiError(
